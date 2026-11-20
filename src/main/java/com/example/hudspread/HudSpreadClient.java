@@ -10,6 +10,7 @@ public class HudSpreadClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         HudSpreadConfig.load();
+        InventoryState.init();
         LOG.info("HudSpread loaded (HUD interval = {} frames, inventory animations off = {})",
                 HudSpreadConfig.get().hudUpdateInterval,
                 HudSpreadConfig.get().disableInventoryAnimations);
