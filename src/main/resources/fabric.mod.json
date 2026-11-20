@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "hudspread",
+  "version": "${version}",
+  "name": "HudSpread",
+  "description": "Spreads HUD updates over several frames to improve performance.",
+  "environment": "client",
+  "entrypoints": { "client": ["com.example.hudspread.HudSpreadClient"] },
+  "mixins": ["hudspread.mixins.json"],
+  "depends": { "fabricloader": ">=0.19.5", "minecraft": "~26.3", "java": ">=25", "fabric-api": "*" }
+}
