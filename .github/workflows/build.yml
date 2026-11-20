@@ -21,15 +21,16 @@ jobs:
       - name: Inspect Minecraft classes (diagnostic)
         if: always()
         run: |
+          JAR=$(find ~/.gradle .gradle -name "minecraft-merged-deobf-*.jar" 2>/dev/null | head -1)
+          [ -z "$JAR" ] && JAR=$(find ~/.gradle .gradle -name "minecraft-merged.jar" 2>/dev/null | head -1)
           {
-            for JAR in $(find ~/.gradle .gradle -name "*.jar" 2>/dev/null | grep -i minecraft | grep -viE "sources|fabric-api|loader" | head -10); do
-              echo "##### $JAR"
-              unzip -l "$JAR" 2>/dev/null | grep -iE "GuiGraphics|InventoryScreen\.class|/Gui\.class|TextureAtlasSprite\.class|SpriteContents\.class|ItemStack\.class" | awk '{print $4}'
-              for C in net.minecraft.client.gui.Gui net.minecraft.client.gui.screens.inventory.InventoryScreen net.minecraft.world.item.ItemStack net.minecraft.client.renderer.texture.TextureAtlasSprite net.minecraft.client.renderer.texture.SpriteContents; do
-                echo "--- $C"
-                javap -p -cp "$JAR" "$C" 2>/dev/null | grep -iE "render|extract|foil|glint|tick|upload|entity" || true
-              done
+            echo "##### $JAR"
+            for C in 'net.minecraft.client.gui.Hud' 'net.minecraft.client.renderer.state.gui.GuiRenderState' 'net.minecraft.client.renderer.GuiRenderer' 'net.minecraft.client.renderer.texture.SpriteContents$AnimationState' 'net.minecraft.client.renderer.texture.TextureAtlas' 'net.minecraft.client.Minecraft' 'net.minecraft.client.renderer.GameRenderer' 'com.mojang.blaze3d.pipeline.RenderTarget'; do
+              echo "--- $C"
+              javap -p -cp "$JAR" "$C" 2>/dev/null | grep -iE "class |interface |screen|render|extract|resize|framebuffer|target|animation|tick|upload|setScreen|gui" | cut -c1-230 || true
             done
+            echo "--- classes with Gui/Hud/RenderTarget in name"
+            unzip -l "$JAR" | awk '{print $4}' | grep -iE "gui/Hud|GuiRender|RenderTarget|TextureTarget|renderpearl" | head -60
           } > inspect.txt 2>&1 || true
           cat inspect.txt
 

@@ -10,11 +10,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * Skips the live player model drawn in the survival inventory.
  * Targets are strings and require = 0 so a renamed class/method in 26.3
  * will NOT crash the game; the option just does nothing until fixed.
- * VERIFY the method name in the decompiled 26.3 sources.
+ * Method name confirmed against 26.3 (javap): static extractEntityInInventoryFollowsMouse(...).
  */
 @Mixin(targets = "net.minecraft.client.gui.screens.inventory.InventoryScreen")
 public class InventoryScreenMixin {
-    @Inject(method = "renderEntityInInventoryFollowsMouse",
+    @Inject(method = "extractEntityInInventoryFollowsMouse",
             at = @At("HEAD"), cancellable = true, require = 0)
     private static void hudspread$skipEntityPreview(CallbackInfo ci) {
         HudSpreadConfig cfg = HudSpreadConfig.get();
