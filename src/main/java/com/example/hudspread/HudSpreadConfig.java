@@ -14,8 +14,11 @@ public final class HudSpreadConfig {
     private static final Path FILE =
             FabricLoader.getInstance().getConfigDir().resolve("hudspread.json");
 
-    /** Re-render the HUD once every N frames (1 = every frame, no caching). */
-    public int hudUpdateInterval = 3;
+    /** Target HUD refresh rate, 1-60 (60 = refresh every frame, no caching). */
+    public int hudFps = 20;
+
+    /** HUD render resolution in percent, 25-100 (100 = full resolution). */
+    public int hudResolutionPercent = 50;
 
     /** Master switch: turn off animations in the inventory screen to reduce lag. */
     public boolean disableInventoryAnimations = true;
@@ -39,7 +42,8 @@ public final class HudSpreadConfig {
                 HudSpreadConfig loaded = GSON.fromJson(Files.readString(FILE), HudSpreadConfig.class);
                 if (loaded != null) instance = loaded;
             }
-            instance.hudUpdateInterval = Math.max(1, instance.hudUpdateInterval);
+            instance.hudFps = Math.max(1, Math.min(60, instance.hudFps));
+            instance.hudResolutionPercent = Math.max(25, Math.min(100, instance.hudResolutionPercent));
             save(); // writes defaults / newly added options
         } catch (IOException | RuntimeException e) {
             HudSpreadClient.LOG.error("Could not read config, using defaults", e);

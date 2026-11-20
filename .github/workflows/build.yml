@@ -17,6 +17,27 @@ jobs:
         with:
           gradle-version: 9.6.0
       - run: gradle build --no-daemon
+
+      - name: Inspect Minecraft classes (diagnostic)
+        if: always()
+        run: |
+          {
+            for JAR in $(find ~/.gradle .gradle -name "*.jar" 2>/dev/null | grep -i minecraft | grep -viE "sources|fabric-api|loader" | head -10); do
+              echo "##### $JAR"
+              unzip -l "$JAR" 2>/dev/null | grep -iE "GuiGraphics|InventoryScreen\.class|/Gui\.class|TextureAtlasSprite\.class|SpriteContents\.class|ItemStack\.class" | awk '{print $4}'
+              for C in net.minecraft.client.gui.Gui net.minecraft.client.gui.screens.inventory.InventoryScreen net.minecraft.world.item.ItemStack net.minecraft.client.renderer.texture.TextureAtlasSprite net.minecraft.client.renderer.texture.SpriteContents; do
+                echo "--- $C"
+                javap -p -cp "$JAR" "$C" 2>/dev/null | grep -iE "render|extract|foil|glint|tick|upload|entity" || true
+              done
+            done
+          } > inspect.txt 2>&1 || true
+          cat inspect.txt
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: inspect
+          path: inspect.txt
       - uses: actions/upload-artifact@v4
         with:
           name: hudspread
