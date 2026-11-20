@@ -1,6 +1,5 @@
 package com.example.hudspread;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -63,7 +62,7 @@ public class HudSpreadScreen extends Screen {
     public void onClose() {
         HudSpreadConfig.save();
         HudCache.invalidate();
-        Minecraft.getInstance().setScreen(parent);
+        ScreenOpener.open(parent);
     }
 
     /** Integer slider between min and max. */
