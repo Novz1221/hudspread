@@ -18,6 +18,7 @@ public final class InventoryState {
             if (screen instanceof AbstractContainerScreen<?> && screen != tracked) {
                 tracked = screen;
                 containerOpen = true;
+                HudSpreadClient.once("Container screen detected: " + screen.getClass().getName());
                 ScreenEvents.remove(screen).register(s -> {
                     if (s == tracked) {
                         tracked = null;

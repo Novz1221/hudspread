@@ -1,6 +1,7 @@
 package com.example.hudspread.mixin;
 
 import com.example.hudspread.HudCache;
+import com.example.hudspread.HudSpreadClient;
 import net.minecraft.client.gui.Gui;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,6 +16,7 @@ public class GuiMixin {
     // Parameter list omitted on purpose (Mixin allows dropping target args).
     @Inject(method = "extractRenderState", at = @At("HEAD"), cancellable = true, require = 0)
     private void hudspread$render(CallbackInfo ci) {
+        HudSpreadClient.once("GuiMixin active: Gui.extractRenderState hooked");
         if (HudCache.canUseCache()) {
             // TODO: draw cached HUD image here, then skip the real HUD.
             ci.cancel();

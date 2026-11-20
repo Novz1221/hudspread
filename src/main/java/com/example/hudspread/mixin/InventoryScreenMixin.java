@@ -1,5 +1,6 @@
 package com.example.hudspread.mixin;
 
+import com.example.hudspread.HudSpreadClient;
 import com.example.hudspread.HudSpreadConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,6 +18,7 @@ public class InventoryScreenMixin {
     @Inject(method = "extractEntityInInventoryFollowsMouse",
             at = @At("HEAD"), cancellable = true, require = 0)
     private static void hudspread$skipEntityPreview(CallbackInfo ci) {
+        HudSpreadClient.once("InventoryScreenMixin active: extractEntityInInventoryFollowsMouse hooked");
         HudSpreadConfig cfg = HudSpreadConfig.get();
         if (cfg.disableInventoryAnimations && cfg.disableInventoryEntityPreview) {
             ci.cancel();

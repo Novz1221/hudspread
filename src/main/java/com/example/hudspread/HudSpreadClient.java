@@ -11,6 +11,12 @@ import org.slf4j.LoggerFactory;
 
 public class HudSpreadClient implements ClientModInitializer {
     public static final Logger LOG = LoggerFactory.getLogger("hudspread");
+    private static final java.util.Set<String> SEEN = java.util.concurrent.ConcurrentHashMap.newKeySet();
+
+    /** Logs a diagnostic line only the first time it is seen (cheap enough for per-frame hooks). */
+    public static void once(String msg) {
+        if (SEEN.add(msg)) LOG.info("[diag] {}", msg);
+    }
 
     @Override
     public void onInitializeClient() {
